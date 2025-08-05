@@ -6,8 +6,9 @@ use axum::{
 };
 use serde_json::json;
 use sqlx::MySqlPool;
+use std::fs;
 
-use crate::models::{ApiResponse, CreateUserRequest, UpdateUserRequest, User};
+use crate::models::{ApiResponse, CreateUserRequest, UpdateUserRequest, User, SpaceshipFileResponse};
 
 pub async fn get_users(State(pool): State<MySqlPool>) -> Result<Json<ApiResponse<Vec<User>>>, StatusCode> {
     match sqlx::query_as::<_, User>("SELECT * FROM users ORDER BY created_at DESC")
@@ -133,6 +134,32 @@ pub async fn delete_user(
             data: None,
             message: Some("User deleted successfully".to_string()),
         })),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+pub async fn get_spaceship_file(
+    Path(filename): Path<String>,
+) -> Result<Json<ApiResponse<SpaceshipFileResponse>>, StatusCode> {
+    // Security check: only allow alphanumeric characters and hyphens to prevent directory traversal
+    if !filename.chars().all(|c| c.is_alphanumeric() || c == '-') {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+
+    let file_path = format!("resources/spaceship/{}.txt", filename);
+    
+    match fs::read_to_string(&file_path) {
+        Ok(content) => Ok(Json(ApiResponse {
+            success: true,
+            data: Some(SpaceshipFileResponse {
+                filename: filename.clone(),
+                content,
+            }),
+            message: Some("File retrieved successfully".to_string()),
+        })),
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+            Err(StatusCode::NOT_FOUND)
+        },
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }

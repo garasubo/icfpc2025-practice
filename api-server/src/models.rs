@@ -29,3 +29,9 @@ pub struct ApiResponse<T> {
     pub data: Option<T>,
     pub message: Option<String>,
 }
+
+#[derive(Debug, Serialize)]
+pub struct SpaceshipFileResponse {
+    pub filename: String,
+    pub content: String,
+}

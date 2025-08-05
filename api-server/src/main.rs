@@ -12,6 +12,8 @@ mod database;
 mod handlers;
 mod models;
 
+use handlers::get_spaceship_file;
+
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
@@ -24,6 +26,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(health_check))
         .route("/api/health", get(health_check))
+        .route("/api/spaceship/:filename", get(get_spaceship_file))
         .layer(cors);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
