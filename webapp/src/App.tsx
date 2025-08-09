@@ -18,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/spaceship" element={<SpaceshipPage />} />
+          <Route path="/spaceship/:problemNumber" element={<SpaceshipPage />} />
         </Routes>
       </div>
     </Router>

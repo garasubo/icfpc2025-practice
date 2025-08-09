@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSpaceshipData } from '../hooks/useSpaceshipData';
 import SpaceshipVisualization from '../components/SpaceshipVisualization';
 
 const SpaceshipPage: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<string>('problem1');
+  const { problemNumber } = useParams<{ problemNumber: string }>();
+  const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState<string>(problemNumber ? `problem${problemNumber}` : 'problem1');
   const { points, loading, error } = useSpaceshipData(selectedFile);
+
+  useEffect(() => {
+    if (problemNumber) {
+      setSelectedFile(`problem${problemNumber}`);
+    }
+  }, [problemNumber]);
 
   const problemFiles = Array.from({ length: 25 }, (_, i) => `problem${i + 1}`);
 
@@ -19,7 +28,12 @@ const SpaceshipPage: React.FC = () => {
         <select
           id="file-select"
           value={selectedFile}
-          onChange={(e) => setSelectedFile(e.target.value)}
+          onChange={(e) => {
+            const newFile = e.target.value;
+            setSelectedFile(newFile);
+            const problemNum = newFile.replace('problem', '');
+            navigate(`/spaceship/${problemNum}`);
+          }}
           style={{
             padding: '8px 12px',
             borderRadius: '4px',
