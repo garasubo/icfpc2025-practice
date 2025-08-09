@@ -10,3 +10,15 @@ export interface ApiResponse<T> {
   message?: string;
   success: boolean;
 }
+
+export interface Point2D {
+  x: number;
+  y: number;
+}
+
+export interface SpaceshipFileData {
+  filename: string;
+  content: string;
+}
+
+export interface SpaceshipApiResponse extends ApiResponse<SpaceshipFileData> {}
