@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import { COORDINATE_SYSTEM, OrthographicView } from '@deck.gl/core';
 import { Point2D } from '../types';
+import CoordinateDisplay from './CoordinateDisplay';
 
 interface SpaceshipVisualizationProps {
   points: Point2D[];
@@ -15,6 +16,8 @@ const SpaceshipVisualization: React.FC<SpaceshipVisualizationProps> = ({
   width = 800,
   height = 600,
 }) => {
+  const [hoveredPoint, setHoveredPoint] = useState<Point2D | null>(null);
+  const [screenPosition, setScreenPosition] = useState<{ x: number; y: number } | null>(null);
   const layers = [
     new ScatterplotLayer({
       id: 'spaceship-points',
@@ -26,11 +29,15 @@ const SpaceshipVisualization: React.FC<SpaceshipVisualizationProps> = ({
       getLineColor: [255, 69, 0, 255],
       getLineWidth: 2,
       radiusMinPixels: 3,
-      radiusMaxPixels: 15,
+      radiusMaxPixels: 10,
       pickable: true,
       onHover: ({ object, x, y }) => {
         if (object) {
-          console.log(`Point: (${object.x}, ${object.y}) at screen position (${x}, ${y})`);
+          setHoveredPoint(object);
+          setScreenPosition({ x, y });
+        } else {
+          setHoveredPoint(null);
+          setScreenPosition(null);
         }
       },
     }),
@@ -98,6 +105,7 @@ const SpaceshipVisualization: React.FC<SpaceshipVisualizationProps> = ({
       >
         Points: {points.length}
       </div>
+      <CoordinateDisplay hoveredPoint={hoveredPoint} screenPosition={screenPosition} />
     </div>
   );
 };
