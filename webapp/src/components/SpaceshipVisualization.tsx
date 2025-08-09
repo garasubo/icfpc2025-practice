@@ -24,12 +24,12 @@ const SpaceshipVisualization: React.FC<SpaceshipVisualizationProps> = ({
       data: points,
       coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
       getPosition: (d: Point2D) => [d.x, d.y, 0],
-      getRadius: 8,
+      getRadius: 2,
       getFillColor: [255, 140, 0, 200],
-      getLineColor: [255, 69, 0, 255],
-      getLineWidth: 2,
-      radiusMinPixels: 3,
-      radiusMaxPixels: 10,
+      getLineColor: [0, 0, 0, 255],
+      getLineWidth: 1,
+      radiusMinPixels: 2,
+      radiusMaxPixels: 5,
       pickable: true,
       onHover: ({ object, x, y }) => {
         if (object) {
