@@ -21,4 +21,4 @@ export interface SpaceshipFileData {
   content: string;
 }
 
-export interface SpaceshipApiResponse extends ApiResponse<SpaceshipFileData> {}
+export type SpaceshipApiResponse = ApiResponse<SpaceshipFileData>;
